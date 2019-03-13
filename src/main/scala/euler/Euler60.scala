@@ -4,7 +4,7 @@ import euler.Utils.PrimeCache
 
 object Euler60 extends App {
 
-  implicit val cache = new PrimeCache[Long](2, 3)
+  implicit val cache = new PrimeCache[Long]
 
   def isPrimePair(pair: (Long, Long)): Boolean = {
     val (x, y) = pair

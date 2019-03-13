@@ -10,7 +10,7 @@ object Euler58 extends App {
     def sideLength: Int = 2 * iteration + 1
   }
 
-  implicit val primeCache = new PrimeCache[Long](2, 3)
+  implicit val primeCache = new PrimeCache[Long]
 
   // Start iterating with only the number '1', so 0 primes and 1 number (iteration 0)
   val diagonals = Iterator.iterate(Stats(0, 1, 0)) { case Stats(oldI, n, p) => {

@@ -44,13 +44,16 @@ object Utils {
 
   def divides(numerator: Long)(divider: Long): Boolean = numerator % divider == 0
 
-  def pairs[T](s: Set[T]): Set[(T, T)] = s match {
+  def pairs[T](set: Set[T]): Set[(T, T)] = set match {
     case s if s.isEmpty => Set()
-    case _ => s.tail.map(x => (s.head, x)) ++ pairs(s.tail)
+    case _ => set.tail.map(x => (set.head, x)) ++ pairs(set.tail)
   }
 
-  class PrimeCache[T](val two: T, val three: T)(implicit ordering: Ordering[T]) {
-    private val cache = collection.mutable.SortedSet[T](two, three)
+  class PrimeCache[T](implicit ev: Integral[T]) {
+    import ev._
+
+    // Initialize already with primes 2 and 3
+    private val cache = collection.mutable.SortedSet[T](one + one, one + one + one)
 
     def contains(x: T): Boolean = cache.contains(x)
 
@@ -58,7 +61,7 @@ object Utils {
     
     def iterator: Iterator[T] = cache.iterator
     
-    def add(x: T) = cache += x
+    def add(x: T): Unit = cache += x
   }
 
   def primes(implicit cache: PrimeCache[Long]): Iterator[Long] = {
@@ -89,5 +92,38 @@ object Utils {
       }
     }
   }
+  
+  def gcd[T](x: T, y: T)(implicit ev: Integral[T]): T = {
+    import ev._
 
+    @tailrec
+    def doGcd(big: T, small: T): T = {
+      val remainder = big % small
+      if (remainder == zero) small else doGcd (small, remainder)
+    }
+
+    val px = if (x.signum < 0) -x else x
+    val py = if (y.signum < 0) -y else y
+
+    val (big, small) = if (px > py) (px, py) else (py, px)
+    doGcd(big, small)
+  }
+
+  /**
+    *  Returns all distinct prime factors of n.
+    *  Note that for prime nrs, this function will return n itself as well. It will also update the caches.
+    */
+  def primeFactors(n: Long)(implicit factorCache: collection.mutable.Map[Long, Set[Long]], primeCache: PrimeCache[Long]): Set[Long] = {
+    val cached = factorCache.get(n)
+    cached.getOrElse {
+      val factor = primes.dropWhile(p => p * p <= n && n % p != 0).next
+      val result = if (factor == n || n % factor != 0) {
+        Set(n)
+      } else {
+        primeFactors(factor) ++ primeFactors(n / factor)
+      }
+      factorCache.put(n, result)
+      result
+    }
+  }
 }
