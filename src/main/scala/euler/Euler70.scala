@@ -18,10 +18,6 @@ object Euler70 extends App {
   // we could cache the halfPhi's as well ..
   def halfPhi(primeFactors: Set[Long]): Fraction[Long] = primeFactors.map(p => Fraction(p - 1, p)).product
 
-  // I think this could be done more efficiently
-  def isPermutation(x: Int, y: Int): Boolean =
-    digits(x).sorted == digits(y).sorted
-
   val (bestN, bestPhi) = (2 until 10000000)
     .map(n => (n, phi(n)))
     .filter(nphi => isPermutation(nphi._1, nphi._2))

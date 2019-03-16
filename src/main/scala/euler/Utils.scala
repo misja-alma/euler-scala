@@ -5,25 +5,32 @@ import scala.collection.immutable.Set
 
 object Utils {
   def digits(x: BigInt): Seq[Int] = {
-    var digits = Seq[Int]()
-    var remain = x
-    do {
-      val digit = remain % 10
-      remain /= 10
-      digits = digit.toInt +: digits
-    } while (remain > 0)
-    digits
+    digits(x, BigInt(10))
   }
 
   def digits(x: Long): Seq[Int] = {
+    digits(x, 10)
+  }
+
+  def digits[A](x: A, radix: A)(implicit ev: Integral[A]): Seq[Int] = {
+    import ev._
     var digits = Seq[Int]()
     var remain = x
     do {
-      val digit = remain % 10
-      remain /= 10
+      val digit = remain % radix
+      remain /= radix
       digits = digit.toInt +: digits
-    } while (remain > 0)
+    } while (remain > zero)
     digits
+  }
+
+  def isPermutation(x: Int, y: Int): Boolean = {
+    val lengthCheck = if (x > y) {
+      y == 0 || (x / y) < 10
+    } else {
+      x == 0 || (y / x) < 10
+    }
+    lengthCheck && digits(x).sorted == digits(y).sorted
   }
 
   def cross[X, Y](xs: Traversable[X], ys: Traversable[Y]): Traversable[(X, Y)] = for {x <- xs; y <- ys } yield (x, y)

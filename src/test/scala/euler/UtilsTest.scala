@@ -39,6 +39,9 @@ class UtilsTest extends FlatSpec with Matchers {
     digits(123) should be(Seq(1, 2, 3))
     digits(0) should be(Seq(0))
     digits(1122) should be(Seq(1, 1, 2, 2))
+
+    digits(13L, 8L) should be(Seq(1, 5))
+    digits(BigInt(128), BigInt(2)) should be(Seq(1, 0, 0, 0, 0, 0, 0, 0))
   }
 
   "concat" should "return the concatenation of 2 ints" in {
@@ -68,5 +71,23 @@ class UtilsTest extends FlatSpec with Matchers {
     primeFactors(6) should be(Set(2, 3))
     primeFactors(24) should be(Set(2, 3))
     primeFactors(25) should be(Set(5))
+  }
+
+  "isPermutation" should "return true if both arguments are permutations" in {
+    isPermutation(12, 21) should be(true)
+    isPermutation(13, 13) should be(true)
+    isPermutation(111, 111) should be(true)
+    isPermutation(0, 0) should be(true)
+    isPermutation(1, 1) should be(true)
+    isPermutation(9, 9) should be(true)
+    isPermutation(9997, 7999) should be(true)
+    isPermutation(91, 19) should be(true)
+    isPermutation(999999991, 199999999) should be(true)
+    isPermutation(199999999, 999999991) should be(true)
+
+    isPermutation(0, 1) should be(false)
+    isPermutation(1, 10) should be(false)
+    isPermutation(1, 11) should be(false)
+    isPermutation(9997, 7779) should be(false)
   }
 }

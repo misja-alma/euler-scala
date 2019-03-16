@@ -25,11 +25,11 @@ object Fraction {
 
     override def toDouble(x: Fraction[T]): Double = ev.toDouble(x.toIntegral)
 
-    override def compare(x: Fraction[T], y: Fraction[T]): Int = x.compareTo(y)
+    override def compare(x: Fraction[T], y: Fraction[T]): Int = x.compare(y)
   }
 }
 
-case class Fraction[T](numerator: T, denominator: T)(implicit ev: Integral[T]) extends Comparable[Fraction[T]] {
+case class Fraction[T](numerator: T, denominator: T)(implicit ev: Integral[T]) extends Ordered[Fraction[T]] {
   import ev._
 
   def +(f2: Fraction[T]): Fraction[T] =
@@ -51,6 +51,8 @@ case class Fraction[T](numerator: T, denominator: T)(implicit ev: Integral[T]) e
 
   def toIntegral: T = numerator / denominator
 
+  def toDouble: Double = numerator.toDouble() / denominator.toDouble()
+
   // Note that hashcode does not need to be overridden because its contract with equals still holds
   override def equals(obj: Any): Boolean = {
     obj.isInstanceOf[Fraction[T]] && {
@@ -60,8 +62,8 @@ case class Fraction[T](numerator: T, denominator: T)(implicit ev: Integral[T]) e
     }
   }
 
-  override def compareTo(other: Fraction[T]): Int = {
-    val dif = this - other
+  override def compare(that: Fraction[T]): Int = {
+    val dif = this - that
     dif.numerator.signum
   }
 }
