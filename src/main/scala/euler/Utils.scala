@@ -116,11 +116,13 @@ object Utils {
     doGcd(big, small)
   }
 
+  type FactorCache[T] = collection.mutable.Map[T, Set[T]]
+
   /**
     *  Returns all distinct prime factors of n.
     *  Note that for prime nrs, this function will return n itself as well. It will also update the caches.
     */
-  def primeFactors(n: Long)(implicit factorCache: collection.mutable.Map[Long, Set[Long]], primeCache: PrimeCache[Long]): Set[Long] = {
+  def primeFactors(n: Long)(implicit factorCache: FactorCache[Long], primeCache: PrimeCache[Long]): Set[Long] = {
     val cached = factorCache.get(n)
     cached.getOrElse {
       val factor = primes.dropWhile(p => p * p <= n && n % p != 0).next

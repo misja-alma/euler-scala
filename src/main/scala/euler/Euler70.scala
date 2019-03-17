@@ -1,6 +1,6 @@
 package euler
 
-import scala.collection.mutable
+import Totient._
 import Utils._
 
 object Euler70 extends App {
@@ -10,13 +10,8 @@ object Euler70 extends App {
   // or better: keep the product(1 - 1/p) for every checked nr.
   // Check if phi is a permutation of n (maybe add some optimizations) and if so, keep it together with n for later use.
 
-  implicit lazy val factorCache: mutable.Map[Long, Set[Long]] = collection.mutable.Map[Long, Set[Long]]()
+  implicit lazy val factorCache: Utils.FactorCache[Long] = collection.mutable.Map[Long, Set[Long]]()
   implicit lazy val primeCache: Utils.PrimeCache[Long] = new Utils.PrimeCache[Long]
-
-  def phi(n: Int): Int = (Fraction(n.toLong) * halfPhi(primeFactors(n))).toIntegral.toInt
-
-  // we could cache the halfPhi's as well ..
-  def halfPhi(primeFactors: Set[Long]): Fraction[Long] = primeFactors.map(p => Fraction(p - 1, p)).product
 
   val (bestN, bestPhi) = (2 until 10000000)
     .map(n => (n, phi(n)))
