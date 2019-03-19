@@ -50,6 +50,13 @@ class UtilsTest extends FlatSpec with Matchers {
     concat(10, 100) should be(10100L)
   }
 
+  "fac" should "return the factorial" in {
+    fac(0) should be(1)
+    fac(1) should be(1)
+    fac(2) should be(2)
+    fac(6) should be(720)
+  }
+
   "gcd" should "return the greatest common divisor" in {
     gcd(6, 4) should be(2)
     gcd(6, 2) should be(2)

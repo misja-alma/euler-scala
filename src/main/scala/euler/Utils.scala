@@ -99,6 +99,14 @@ object Utils {
       }
     }
   }
+
+  def fac(x: Int): Int = {
+    @tailrec
+    def doFac(n: Int, res: Int): Int =
+      if (n <= 1) res else doFac(n - 1, n * res)
+
+    doFac(x, 1)
+  }
   
   def gcd[T](x: T, y: T)(implicit ev: Integral[T]): T = {
     import ev._
