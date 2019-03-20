@@ -43,7 +43,8 @@ object Euler75 extends App {
         })
         .takeWhile(_ <= maxLength)
     })
-  
+
+  // Actually just using an array for storing the counts could have been faster
   val solution = allLengths.groupBy(identity).count(_._2.size == 1)
 
   println("Solution: " + solution)
