@@ -68,16 +68,16 @@ class UtilsTest extends FlatSpec with Matchers {
     gcd(-6, 2) should be(2)
   }
 
-  "primeFactors" should "return all distinct prime factors" in {
+  "distinctPrimeFactors" should "return all distinct prime factors" in {
     implicit val factorCache: mutable.Map[Long, Set[Long]] = collection.mutable.Map[Long, Set[Long]]()
     implicit val primeCache: Utils.PrimeCache[Long] = new PrimeCache[Long]
 
-    primeFactors(2) should be(Set(2))
-    primeFactors(3) should be(Set(3))
-    primeFactors(4) should be(Set(2))
-    primeFactors(6) should be(Set(2, 3))
-    primeFactors(24) should be(Set(2, 3))
-    primeFactors(25) should be(Set(5))
+    distinctPrimeFactors(2) should be(Set(2))
+    distinctPrimeFactors(3) should be(Set(3))
+    distinctPrimeFactors(4) should be(Set(2))
+    distinctPrimeFactors(6) should be(Set(2, 3))
+    distinctPrimeFactors(24) should be(Set(2, 3))
+    distinctPrimeFactors(25) should be(Set(5))
   }
 
   "isPermutation" should "return true if both arguments are permutations" in {
@@ -96,5 +96,9 @@ class UtilsTest extends FlatSpec with Matchers {
     isPermutation(1, 10) should be(false)
     isPermutation(1, 11) should be(false)
     isPermutation(9997, 7779) should be(false)
+  }
+
+  "unOrderedPartitions" should "return the stream of the nr of unordered partitions" in {
+    unOrderedPartitions[Long].take(6).toList should be(List(1, 1, 2, 3, 5, 7))
   }
 }

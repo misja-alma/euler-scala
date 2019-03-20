@@ -130,17 +130,56 @@ object Utils {
     *  Returns all distinct prime factors of n.
     *  Note that for prime nrs, this function will return n itself as well. It will also update the caches.
     */
-  def primeFactors(n: Long)(implicit factorCache: FactorCache[Long], primeCache: PrimeCache[Long]): Set[Long] = {
+  def distinctPrimeFactors(n: Long)(implicit factorCache: FactorCache[Long], primeCache: PrimeCache[Long]): Set[Long] = {
     val cached = factorCache.get(n)
     cached.getOrElse {
       val factor = primes.dropWhile(p => p * p <= n && n % p != 0).next
       val result = if (factor == n || n % factor != 0) {
         Set(n)
       } else {
-        primeFactors(factor) ++ primeFactors(n / factor)
+        distinctPrimeFactors(factor) ++ distinctPrimeFactors(n / factor)
       }
       factorCache.put(n, result)
       result
     }
+  }
+
+  /**
+    *  Returns the stream of the nr. of distinct unordered partitions of a set of size n. Includes the set itself.
+    *  E.g the nr of n = 4 is 5:
+    *  1111, 31, 211, 22 and 4
+    *  Note: starts at n = 0
+    */
+  def unOrderedPartitions[T](implicit ev: Integral[T]): Stream[T] = {
+    import ev._
+
+    val partitionCache = new collection.mutable.ArrayBuffer[T]()
+
+    // Assumes that n is always the next un-calculated entry in the partitionCache
+    def calcPartitions(n: Int): T = {
+      def path(i: Int): T = if (i < 0) zero else partitionCache(i.toInt)
+
+      // This make use of a recurrence relation of the partition function p:
+      // p(n) = sum(k>1) -1^(k+1) * (p(n - k(3k - 1)/2) + p(n - k(3k + 1)/2))
+
+      def previousValues(k: Int): T = {
+        val i1 = n - (3 * k - 1) * k / 2
+        val i2 = n - (3 * k + 1) * k / 2
+        path(i1) + path(i2)
+      }
+
+      val result = if (n == 0) one else
+        Stream
+          .from(1)
+          .map(previousValues)
+          .takeWhile(_ > zero)
+          .foldLeft((one, zero)) { case ((k, acc), pr) => (k * -one, acc + k * pr) }
+          ._2
+
+      partitionCache.append(result)
+      result
+    }
+
+    Stream.from(0).map(calcPartitions)
   }
 }
