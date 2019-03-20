@@ -11,4 +11,9 @@ class ContinuedFractionTest extends FlatSpec with Matchers {
     getSquareRootContinuedFraction(3) should be(ContinuedFraction(3, 1, Seq(1, 2)))
     getSquareRootContinuedFraction(23) should be(ContinuedFraction(23, 4, Seq(1, 3, 1, 8)))
   }
+
+  "approximateSqrt" should "give an approximation of the square root" in {
+    approximateSqrt(4, 10) should be (2)
+    Math.abs(approximateSqrt(2, 30).toDouble - Math.sqrt(2)) < Double.MinPositiveValue should be(true)
+  }
 }

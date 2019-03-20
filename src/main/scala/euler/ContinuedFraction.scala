@@ -2,6 +2,11 @@ package euler
 
 import scala.annotation.tailrec
 
+/**
+  * @param n  In case of a sqrt, the nr the sqrt was taken of
+  * @param a0 The whole part of the fraction
+  * @param repeatingSequence The sequence representing the fraction
+  */
 case class ContinuedFraction(n: Int, a0: Int, repeatingSequence: Seq[Int]) {
   override def toString: String = s"Sqrt($n)=[$a0;(${repeatingSequence.mkString(",")})], period=$period"
 
@@ -20,6 +25,9 @@ case class ContinuedFraction(n: Int, a0: Int, repeatingSequence: Seq[Int]) {
 }
 
 object ContinuedFraction {
+  /**
+    * Note: the cf series should be the complete series, i.e. including a0
+    */
   @tailrec
   def evaluateCfSeries(reverseCfSeries: Seq[Int], b: Double = Double.PositiveInfinity): Double =
     if (reverseCfSeries.isEmpty) b else {
@@ -27,6 +35,9 @@ object ContinuedFraction {
       evaluateCfSeries(reverseCfSeries.tail, newB)
     }
 
+  /**
+    * Note: the cf series should be the complete series, i.e. including a0
+    */
   @tailrec
   def evaluateCfSeriesAsFraction(reverseCfSeries: Seq[Int], b: (BigInt, BigInt) = (1, 0)): (BigInt, BigInt) =
     if (reverseCfSeries.isEmpty) b else {
@@ -35,6 +46,15 @@ object ContinuedFraction {
       evaluateCfSeriesAsFraction(reverseCfSeries.tail, newB)
     }
 
+  // precision is the length of the cf series that we use: a rough guess is that it should be 4 times the nr of decimal digits precision required.
+  def approximateSqrt(x: Int, precision: Int): BigDecimal = {
+    val cf = getSquareRootContinuedFraction(x)
+    if (cf.repeatingSequence.isEmpty) cf.a0 else {
+      val series: Stream[Int] = Stream.continually(cf.repeatingSequence).flatten
+      val fraction = evaluateCfSeriesAsFraction((cf.a0 +: series.take(precision)).reverse)
+      BigDecimal(fraction._1) / BigDecimal(fraction._2)
+    }
+  }
 
   // a0: sqrt(n).toInt
   // a1:
