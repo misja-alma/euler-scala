@@ -13,6 +13,12 @@ class CardTest extends FlatSpec with Matchers {
     parseCard("KC") should be(Card(CLUBS, 13))
     parseCard("ac") should be(Card(CLUBS, 14))
   }
+
+  "shuffle" should "return a shuffled deck" in {
+    shuffle(2).length should be(2)
+    shuffle(52).length should be(52)
+    shuffle(52).toSet.size should be(52)
+  }
 }
 
 

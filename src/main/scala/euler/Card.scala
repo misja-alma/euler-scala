@@ -1,5 +1,8 @@
 package euler
 
+import scala.annotation.tailrec
+import scala.util.Random
+
 object Card {
   val CLUBS = 0
   val DIAMONDS = 1
@@ -27,6 +30,30 @@ object Card {
   }
 
   def parseCard(s: String): Card = Card(parseColor(s(1)), parseRank(s.head))
+
+  /**
+    * Returns an array with nrCards shuffled indices
+    */
+  def shuffle(nrCards: Int): Array[Int] = {
+    def swap(i1: Int, i2: Int, ar: Array[Int]): Unit = {
+      val h = ar(i1)
+      ar(i1) = ar(i2)
+      ar(i2) = h
+    }
+
+    @tailrec
+    def doShuffle(i: Int, cards: Array[Int]): Unit = {
+      if (i < cards.length) {
+        val rnd = Random.nextInt(cards.length - i)
+        swap(cards.length - i - 1, rnd, cards)
+        doShuffle(i + 1, cards)
+      }
+    }
+
+    val result = (0 until nrCards).toArray
+    doShuffle(0, result)
+    result
+  }
 }
 
 case class Card(color: Int, rank: Int)
