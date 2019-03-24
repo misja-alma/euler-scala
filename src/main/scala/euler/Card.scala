@@ -34,25 +34,27 @@ object Card {
   /**
     * Returns an array with nrCards shuffled indices
     */
-  def shuffle(nrCards: Int): Array[Int] = {
-    def swap(i1: Int, i2: Int, ar: Array[Int]): Unit = {
+  def shuffle(nrCards: Int)(implicit rndGen: Random = Random): Array[Int] = {
+    val ar = (0 until nrCards).toArray
+
+    def swap(i1: Int, i2: Int): Unit = {
       val h = ar(i1)
       ar(i1) = ar(i2)
       ar(i2) = h
     }
 
     @tailrec
-    def doShuffle(i: Int, cards: Array[Int]): Unit = {
-      if (i < cards.length) {
-        val rnd = Random.nextInt(cards.length - i)
-        swap(cards.length - i - 1, rnd, cards)
-        doShuffle(i + 1, cards)
+    def doShuffle(from: Int): Array[Int] = {
+      if (from < ar.length - 1) {
+        val rnd = rndGen.nextInt(ar.length - from)
+        swap(ar.length - from - 1, rnd)
+        doShuffle(from + 1)
+      } else {
+        ar
       }
     }
 
-    val result = (0 until nrCards).toArray
-    doShuffle(0, result)
-    result
+    doShuffle(0)
   }
 }
 
