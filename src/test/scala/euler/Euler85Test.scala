@@ -6,12 +6,12 @@ import Euler85._
 
 class Euler85Test extends FlatSpec with Matchers {
 
-  "calcCount" should "calculate the count of rectangles" in {
-    calcCount(1, 1) should be(1)
-    calcCount(2, 1) should be(3)
-    calcCount(3, 1) should be(6)
-    calcCount(4, 1) should be(10)
-    calcCount(3, 3) should be(18)
+  "calcRectangleCount" should "calculate the count of rectangles" in {
+    calcRectangleCount(1, 1) should be(1)
+    calcRectangleCount(2, 1) should be(3)
+    calcRectangleCount(3, 1) should be(6)
+    calcRectangleCount(4, 1) should be(10)
+    calcRectangleCount(3, 3) should be(18)
   }
 
   "findClosestRectangleCountWithHeight" should "return the rectangle whose count is closest to the threshold" in {

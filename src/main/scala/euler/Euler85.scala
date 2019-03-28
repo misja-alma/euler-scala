@@ -13,12 +13,12 @@ object Euler85 extends App {
     def area: Int = width * height
   }
 
-  def calcCount(width: Int, countOfWidthOne: Int): Int = width * (width + 1) / 2 * countOfWidthOne
+  def calcRectangleCount(width: Int, countOfWidthOne: Int): Int = width * (width + 1) / 2 * countOfWidthOne
 
   def findClosestRectangleCountWithHeight(height: Int, threshold: Int): RectangleResult = {
-    val widthOne = calcCount(height, 1)
-    val (w, firstBigger) = Iterator.iterate((1, widthOne)) { case (width, _) =>  (width + 1, calcCount(width + 1, widthOne))}.dropWhile(_._2 < threshold).next()
-    val lastSmaller = calcCount(w - 1 , widthOne)
+    val widthOne = calcRectangleCount(height, 1)
+    val (w, firstBigger) = Iterator.iterate((1, widthOne)) { case (width, _) =>  (width + 1, calcRectangleCount(width + 1, widthOne))}.dropWhile(_._2 < threshold).next()
+    val lastSmaller = calcRectangleCount(w - 1 , widthOne)
     if (Math.abs(threshold - firstBigger) < Math.abs(threshold - lastSmaller)) {
       RectangleResult(firstBigger, w, height)
     } else {

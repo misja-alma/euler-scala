@@ -4,8 +4,6 @@ import ContinuedFraction._
 
 object Euler80 extends App {
 
-  val tenP100 = BigDecimal(10).pow(100)
-
   def digitalSum(x: BigDecimal): Int = {
     x.toString().filterNot(_ == '.').take(100).map(_.asDigit).sum
   }
