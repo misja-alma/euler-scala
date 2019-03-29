@@ -7,8 +7,6 @@ object Euler86 extends App {
   // The route is the shortest when the longest of a,b,c is c.
   // So for each c, count all a,b pairs that give the remaining square and where both are <= c. Note that we want distinct cuboids so probably we need to keep them in a Set.
 
-  case class State(m: Int, solutions: Int)
-
   def isSquare(x: Int): Boolean = {
     val s = Math.sqrt(x).toInt
     s * s == x
@@ -19,12 +17,7 @@ object Euler86 extends App {
       (a to c).count(b => isSquare((a + b) * (a + b) + c * c))
     }.sum
 
-  def addNextSolutions(state: State): State = {
-    val nextM = state.m + 1
-    State(nextM, state.solutions + shortestPaths(nextM))
-  }
-
-  val State(m, solutions) = Iterator.iterate(State(1, 0))(addNextSolutions).dropWhile(_.solutions <= 1000000).next
+  val (solutions, m) = Stream.from(1).map(shortestPaths).scan(0)(_ + _).zipWithIndex.dropWhile(_._1 <= 1000000).head
 
   println ("Solution: " + m)
 }
