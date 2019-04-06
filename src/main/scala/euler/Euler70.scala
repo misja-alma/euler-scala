@@ -10,7 +10,7 @@ object Euler70 extends App {
   // or better: keep the product(1 - 1/p) for every checked nr.
   // Check if phi is a permutation of n (maybe add some optimizations) and if so, keep it together with n for later use.
 
-  implicit lazy val factorCache: Utils.FactorCache[Long] = collection.mutable.Map[Long, Set[Long]]()
+  implicit lazy val factorCache: Utils.FactorCache[Long] = collection.mutable.Map[Long, Seq[Long]]()
   implicit lazy val primeCache: Utils.PrimeCache[Long] = new Utils.PrimeCache[Long]
 
   val (bestN, bestPhi) = (2 until 10000000)

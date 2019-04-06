@@ -2,6 +2,7 @@ package euler
 
 import scala.annotation.tailrec
 import scala.collection.immutable.Set
+import scala.collection.mutable.ArrayBuffer
 
 object Utils {
   def digits(x: BigInt): Seq[Int] = {
@@ -124,20 +125,20 @@ object Utils {
     doGcd(big, small)
   }
 
-  type FactorCache[T] = collection.mutable.Map[T, Set[T]]
+  type FactorCache[T] = collection.mutable.Map[T, Seq[T]]
 
   /**
-    *  Returns all distinct prime factors of n.
+    *  Returns all prime factors of n.
     *  Note that for prime nrs, this function will return n itself as well. It will also update the caches.
     */
-  def distinctPrimeFactors(n: Long)(implicit factorCache: FactorCache[Long], primeCache: PrimeCache[Long]): Set[Long] = {
+  def primeFactors(n: Long)(implicit factorCache: FactorCache[Long], primeCache: PrimeCache[Long]): Seq[Long] = {
     val cached = factorCache.get(n)
     cached.getOrElse {
       val factor = primes.dropWhile(p => p * p <= n && n % p != 0).next
       val result = if (factor == n || n % factor != 0) {
-        Set(n)
+        Seq(n)
       } else {
-        distinctPrimeFactors(factor) ++ distinctPrimeFactors(n / factor)
+        primeFactors(factor) ++ primeFactors(n / factor)
       }
       factorCache.put(n, result)
       result
@@ -181,5 +182,39 @@ object Utils {
     }
 
     Stream.from(0).map(calcPartitions)
+  }
+
+  private def dummyFilter[T]: ArrayBuffer[T] => Boolean = _ => false
+
+  /**
+    * Returns all unordered sequences that can be created by combining elements of seq together (using *).
+    * Includes seq itself.
+    *
+    * @param pruneFilter This optional parameter should return true if a candidate can be skipped and all its subsequent combinations as well.
+    */
+  def combinationSeqs[T](seq: ArrayBuffer[T], combine: (T, T) => T, pruneFilter: ArrayBuffer[T] => Boolean = dummyFilter[T]): Set[ArrayBuffer[T]] = {
+    if (seq.isEmpty || pruneFilter(seq)) Set() else {
+      val nextCandidates = collection.mutable.Set[ArrayBuffer[T]]()
+      val usedForEl1 = collection.mutable.Set[T]()
+      seq.indices.foreach { i1 =>
+        val el1 = seq(i1)
+        if (!usedForEl1(el1)) {
+          usedForEl1 += el1
+          val usedForEl2 = collection.mutable.Set[T]()
+          (i1 + 1 until seq.length).foreach { i2 =>
+            val el2 = seq(i2)
+            if (!usedForEl2(el2)) {
+              usedForEl2 += el2
+              val newSeq = seq.clone()
+              newSeq(i2) = combine(el1, el2)
+              newSeq.remove(i1)
+              nextCandidates += newSeq
+            }
+          }
+        }
+      }
+
+      nextCandidates.flatMap(c => combinationSeqs(c, combine, pruneFilter)).toSet + seq
+    }
   }
 }

@@ -5,7 +5,7 @@ import Totient._
 
 class TotientTest extends FlatSpec with Matchers {
 
-  implicit lazy val factorCache: Utils.FactorCache[Long] = collection.mutable.Map[Long, Set[Long]]()
+  implicit lazy val factorCache: Utils.FactorCache[Long] = collection.mutable.Map[Long, Seq[Long]]()
   implicit lazy val primeCache: Utils.PrimeCache[Long] = new Utils.PrimeCache[Long]
 
   "phi" should "return the totient" in {

@@ -3,7 +3,7 @@ package euler
 import euler.Utils._
 import org.scalatest.{FlatSpec, Matchers}
 
-import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 class UtilsTest extends FlatSpec with Matchers {
 
@@ -69,15 +69,15 @@ class UtilsTest extends FlatSpec with Matchers {
   }
 
   "distinctPrimeFactors" should "return all distinct prime factors" in {
-    implicit val factorCache: mutable.Map[Long, Set[Long]] = collection.mutable.Map[Long, Set[Long]]()
+    implicit val factorCache = collection.mutable.Map[Long, Seq[Long]]()
     implicit val primeCache: Utils.PrimeCache[Long] = new PrimeCache[Long]
 
-    distinctPrimeFactors(2) should be(Set(2))
-    distinctPrimeFactors(3) should be(Set(3))
-    distinctPrimeFactors(4) should be(Set(2))
-    distinctPrimeFactors(6) should be(Set(2, 3))
-    distinctPrimeFactors(24) should be(Set(2, 3))
-    distinctPrimeFactors(25) should be(Set(5))
+    primeFactors(2) should be(Seq(2))
+    primeFactors(3) should be(Seq(3))
+    primeFactors(4) should be(Seq(2, 2))
+    primeFactors(6) should be(Seq(2, 3))
+    primeFactors(24) should be(Seq(2, 2, 2, 3))
+    primeFactors(25) should be(Seq(5, 5))
   }
 
   "isPermutation" should "return true if both arguments are permutations" in {
@@ -100,5 +100,15 @@ class UtilsTest extends FlatSpec with Matchers {
 
   "unOrderedPartitions" should "return the stream of the nr of unordered partitions" in {
     unOrderedPartitions[Long].take(6).toList should be(List(1, 1, 2, 3, 5, 7))
+  }
+
+  "combinationSeqs" should "return the set of all sequences that can be created by combining elements" in {
+    val multiply: (Long, Long) => Long = Numeric.LongIsIntegral.times
+
+    combinationSeqs[Long](ArrayBuffer(1, 2, 3), multiply).map(_.sorted) should be(Set(Seq(1, 2, 3), Seq(2, 3), Seq(1, 6), Seq(2, 3), Seq(6)))
+    combinationSeqs[Long](ArrayBuffer(2, 2, 3), multiply).map(_.sorted) should be(Set(Seq(2, 2, 3), Seq(3, 4), Seq(2, 6), Seq(12)))
+
+    def pruneWithSumAbove7(ar: ArrayBuffer[Long]): Boolean = ar.sum > 7
+    combinationSeqs[Long](ArrayBuffer(2, 2, 3), multiply, pruneWithSumAbove7).map(_.sorted) should be(Set(Seq(2, 2, 3), Seq(3, 4)))
   }
 }
