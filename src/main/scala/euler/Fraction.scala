@@ -56,9 +56,7 @@ case class Fraction[T](numerator: T, denominator: T)(implicit ev: Integral[T]) e
   // Note that hashcode does not need to be overridden because its contract with equals still holds
   override def equals(obj: Any): Boolean = {
     obj.isInstanceOf[Fraction[T]] && {
-      val other = obj.asInstanceOf[Fraction[T]].simplify
-      val me = simplify
-      other.numerator == me.numerator && other.denominator == me.denominator
+      compare(obj.asInstanceOf[Fraction[T]]) == 0
     }
   }
 
