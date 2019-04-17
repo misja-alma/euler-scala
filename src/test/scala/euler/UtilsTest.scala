@@ -111,4 +111,15 @@ class UtilsTest extends FlatSpec with Matchers {
     def pruneWithSumAbove7(ar: ArrayBuffer[Long]): Boolean = ar.sum > 7
     combinationSeqs[Long](ArrayBuffer(2, 2, 3), multiply, pruneWithSumAbove7).map(_.sorted) should be(Set(Seq(2, 2, 3), Seq(3, 4)))
   }
+
+  "sqrt" should "return the integer square root or if not applicable something near" in {
+    for (x <- 0L to 100000) sqrt(x * x) should be(x)
+    sqrt(1000000000000L) should be(1000000)
+    sqrt(BigInt(1000000000000L) * BigInt(1000000000000L)) should be (BigInt(1000000000000L))
+
+    sqrt(2) should be(1)
+    sqrt(3) should be(2)
+    sqrt(101) should be(10)
+    sqrt(99) should be(9)
+  }
 }

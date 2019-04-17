@@ -81,6 +81,7 @@ object Euler93 extends App {
     }
   }
 
+  // Take a shortcut here, assume that no longest sequence starts above 100. And of course it should start above 0.
   def longestSequence(nrs: Set[Int]): (Int, Int) = {
     var start = 1
     var longest = 0
@@ -113,11 +114,9 @@ object Euler93 extends App {
         valueArray(i) = number
       }
       allExpressions.map(_.calculate(valueArray: _*))
-        .filterNot(x => x.denominator == 0 || x.numerator == 0)
-        .map(_.simplify)
-        .filter(_.denominator == 1)
-        .map(_.numerator)
-        .filter(_ > 0)
+        .filterNot(_.denominator == 0)
+        .filter(_.isWholeNumber)
+        .map(_.toIntegral)
     }.toSet
 
     (nrs, longestSequence(allResults))

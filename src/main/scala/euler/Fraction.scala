@@ -49,16 +49,15 @@ case class Fraction[T](numerator: T, denominator: T)(implicit ev: Integral[T]) e
     Fraction(numerator / divider, denominator / divider)
   }
 
+  def isWholeNumber: Boolean = numerator % denominator == 0
+
   def toIntegral: T = numerator / denominator
 
   def toDouble: Double = numerator.toDouble() / denominator.toDouble()
 
   // Note that hashcode does not need to be overridden because its contract with equals still holds
-  override def equals(obj: Any): Boolean = {
-    obj.isInstanceOf[Fraction[T]] && {
-      compare(obj.asInstanceOf[Fraction[T]]) == 0
-    }
-  }
+  override def equals(obj: Any): Boolean =
+    obj.isInstanceOf[Fraction[T]] && compare(obj.asInstanceOf[Fraction[T]]) == 0
 
   override def compare(that: Fraction[T]): Int = {
     val dif = this - that

@@ -47,6 +47,7 @@ object ContinuedFraction {
     }
 
   // precision is the length of the cf series that we use: a rough guess is that it should be 4 times the nr of decimal digits precision required.
+  // NOTE -> Newton approximation converges much faster!
   def approximateSqrt(x: Int, precision: Int): BigDecimal = {
     val cf = getSquareRootContinuedFraction(x)
     if (cf.repeatingSequence.isEmpty) cf.a0 else {

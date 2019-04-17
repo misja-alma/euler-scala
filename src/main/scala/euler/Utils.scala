@@ -217,4 +217,17 @@ object Utils {
       nextCandidates.flatMap(c => combinationSeqs(c, combine, pruneFilter)).toSet + seq
     }
   }
+
+  def sqrt(x: BigInt): BigInt = {
+    if (x <= 1) x else {
+      var xn: BigInt = x / 2
+      var prev = xn
+      do {
+        prev = xn
+        xn = (xn + x / xn) / 2
+      } while ((prev - xn).abs > 1)
+
+      xn
+    }
+  }
 }
