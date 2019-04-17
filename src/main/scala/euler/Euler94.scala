@@ -17,13 +17,13 @@ object Euler94 extends App {
   
   val aMinusOnePerimeterSum = (3L to 333333333 by 2)   // 1 1 0 is not a triangle
     .filter { a =>
-    isSquare((3 * a - 1) * (a + 1))
+      isSquare((3 * a - 1) * (a + 1))
     }
     .foldLeft(0L){ case (sum, a) => sum + 3 * a - 1}  
 
   val aPlusOnePerimeterSum = (3L to 333333333 by 2)   // 1 1 2 is not a triangle
     .filter { a =>
-    isSquare((3 * a + 1) * (a - 1))
+      isSquare((3 * a + 1) * (a - 1))
     }
     .foldLeft(0L){ case (sum, a) => sum + 3 * a + 1}
 

@@ -125,6 +125,25 @@ object Utils {
     doGcd(big, small)
   }
 
+  type DivisorCache[T] = collection.mutable.Map[T, Set[T]]
+
+  def divisors(n: Long)(implicit divisorCache: DivisorCache[Long], primeCache: PrimeCache[Long]): Set[Long] = {
+    if (n == 1) Set() else {
+      val cached = divisorCache.get(n)
+      cached.getOrElse {
+        val factor = primes.dropWhile(p => p * p <= n && n % p != 0).next
+        val result = if (factor == n || n % factor != 0) Set(1L) else {
+          val otherFactor = n / factor
+          val otherDivisors = divisors(otherFactor) + otherFactor
+          val combinations = otherDivisors.map(_ * factor).filter(_ < n)
+          otherDivisors ++ combinations
+        }
+        divisorCache.put(n, result)
+        result
+      }
+    }
+  }
+
   type FactorCache[T] = collection.mutable.Map[T, Seq[T]]
 
   /**
@@ -138,7 +157,7 @@ object Utils {
       val result = if (factor == n || n % factor != 0) {
         Seq(n)
       } else {
-        primeFactors(factor) ++ primeFactors(n / factor)
+        factor +: primeFactors(n / factor)
       }
       factorCache.put(n, result)
       result

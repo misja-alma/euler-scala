@@ -68,7 +68,7 @@ class UtilsTest extends FlatSpec with Matchers {
     gcd(-6, 2) should be(2)
   }
 
-  "distinctPrimeFactors" should "return all distinct prime factors" in {
+  "primeFactors" should "return all prime factors" in {
     implicit val factorCache = collection.mutable.Map[Long, Seq[Long]]()
     implicit val primeCache: Utils.PrimeCache[Long] = new PrimeCache[Long]
 
@@ -78,6 +78,19 @@ class UtilsTest extends FlatSpec with Matchers {
     primeFactors(6) should be(Seq(2, 3))
     primeFactors(24) should be(Seq(2, 2, 2, 3))
     primeFactors(25) should be(Seq(5, 5))
+  }
+
+  "divisors" should "return all divisors" in {
+    implicit val divisorCache = collection.mutable.Map[Long, Set[Long]]()
+    implicit val primeCache: Utils.PrimeCache[Long] = new PrimeCache[Long]
+
+    divisors(1) should be(Set())
+    divisors(2) should be(Set(1))
+    divisors(3) should be(Set(1))
+    divisors(4) should be(Set(2, 1))
+    divisors(6) should be(Set(3, 2, 1))
+    divisors(12) should be(Set(6, 4, 3, 2, 1))
+    divisors(16) should be(Set(8, 4, 2, 1))
   }
 
   "isPermutation" should "return true if both arguments are permutations" in {
