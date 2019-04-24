@@ -5,6 +5,12 @@ import scala.io.Source
 import Utils._
 
 object Euler98 extends App {
+  // Classify all words by their prime product. Since every nr has a unique prime product, words with same products must be anagrams. Same for squares.
+  // Then for each anagram word group try to find matching square pairs. To be sure, I matched all words with all square candidates within a group.
+  // Matching squares are found by first selecting square anagrams with same length and then creating a mapping from char to digit, if this succeeds, then
+  // see if we can find another word/square pair from the same groups that can use the same char digit mapping.
+  // Finally just select the largest square from any such pair.
+
   // max length is 14 chars, max anagram length is 9 chars, 42 word anagram groups and 7118 squares
   val words = Source.fromInputStream(getClass.getResourceAsStream("/p098_words.txt"))
     .getLines()
@@ -20,7 +26,6 @@ object Euler98 extends App {
     .groupBy(primeProduct)
     .filterNot(_._2.length == 1)
     .values.toList
-    .sortBy(_.head.length)
 
   val squares = (4L to Math.sqrt(999999999).toLong).map(x => x * x).map(digits)
 
@@ -47,21 +52,20 @@ object Euler98 extends App {
     }
 
   def mapDigits(str: String, digits: Seq[Int]): Option[Map[Char, Int]] = {
-    val (error, mappings) = str.zip(digits).foldLeft((false, Map[Char, Int]())) { case ((err, mapp), (c, d)) =>
-      if (err) (err, mapp) else {
+    val emptyState: Option[Map[Char, Int]] = Some(Map[Char, Int]())
+    str.zip(digits).foldLeft(emptyState) {
+      case (maybeMap, (c, d)) => maybeMap.flatMap { mapp =>
         if (mapp.contains(c)) {
-          (mapp(c) != d, mapp)
+          if (mapp(c) != d) None else Some(mapp)
         } else {
           if (mapp.values.exists(_ == d)) {
-            (true, mapp)
+            None
           } else {
-            (false, mapp + (c -> d))
+            Some(mapp + (c -> d))
           }
         }
       }
     }
-
-    if (error) None else Some(mappings)
   }
 
   def getMatchingSecondSquare(digitMap: Map[Char, Int], str: String)(digits: Seq[Int]): Option[Long] =
