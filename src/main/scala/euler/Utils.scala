@@ -25,6 +25,8 @@ object Utils {
     digits
   }
 
+  def fromDigits(ints: Seq[Int]): Long = if (ints.isEmpty) 0L else ints.last + 10 * fromDigits(ints.init)
+
   def isPermutation(x: Int, y: Int): Boolean = {
     val lengthCheck = if (x > y) {
       y == 0 || (x / y) < 10

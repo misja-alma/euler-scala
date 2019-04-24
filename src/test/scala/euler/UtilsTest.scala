@@ -44,6 +44,12 @@ class UtilsTest extends FlatSpec with Matchers {
     digits(BigInt(128), BigInt(2)) should be(Seq(1, 0, 0, 0, 0, 0, 0, 0))
   }
 
+  "fromDigits" should "return the number corresponding to the digits" in {
+    fromDigits(Seq(1, 2, 3)) should be(123L)
+    fromDigits(Seq(0, 9, 9)) should be(99)
+    fromDigits(Seq(1)) should be(1)
+  }
+
   "concat" should "return the concatenation of 2 ints" in {
     concat(12, 34) should be(1234L)
     concat(1, 1) should be(11L)
