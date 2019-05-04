@@ -1,1 +1,1 @@
-Runnable solutions for project Euler, written in Scala.
+# Runnable solutions for project Euler, written in Scala.
